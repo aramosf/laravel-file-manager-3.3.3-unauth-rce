@@ -1,0 +1,10 @@
+services:
+  lfm-lab:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: lfm-lab:3.3.3
+    container_name: lfm-lab
+    ports:
+      - "127.0.0.1:18080:80"
+    restart: "no"
