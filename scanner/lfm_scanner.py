@@ -57,6 +57,21 @@ import urllib.parse
 import urllib.request
 
 UA = "lfm-exposure-scanner/1.0 (+security-research; authorized use only)"
+
+
+def clean(value):
+    """Neutralize control/escape characters in server-derived data before display."""
+    s = str(value)
+    out = "".join(ch if (ch == " " or ch.isprintable()) else "\\x%02x" % ord(ch) for ch in s)
+    return out[:300]
+
+
+def csv_safe(value):
+    """Defang spreadsheet formula injection in CSV cells."""
+    s = "" if value is None else str(value)
+    if s[:1] in ("=", "+", "-", "@", "\t", "\r"):
+        return "'" + s
+    return s
 DEFAULT_PREFIXES = ["file-manager", "filemanager", "admin/file-manager", "laravel-filemanager"]
 TIMEOUT = 15
 
@@ -355,10 +370,12 @@ def main():
             else:
                 extra = []
                 if "acl" in r:
-                    extra.append(f"acl={r.get('acl')}")
+                    acl = r.get("acl")
+                    extra.append(f"acl={acl if isinstance(acl, bool) else clean(acl)}")
                 if r.get("disks"):
-                    extra.append(f"disks={r['disks']}")
-                print(f"[{RISK.get(r['verdict'],'-'):>8}] {r['verdict']:<16} {r['url']}"
+                    extra.append("disks=" + clean(r["disks"]))
+                verdict = r["verdict"] if r["verdict"] in RISK else "ERROR"
+                print(f"[{RISK.get(verdict,'-'):>8}] {verdict:<16} {clean(r['url'])}"
                       + (("  " + " ".join(extra)) if extra else ""))
 
     if args.csv:
@@ -367,7 +384,7 @@ def main():
             w = csv.DictWriter(fh, fieldnames=keys)
             w.writeheader()
             for r in results:
-                w.writerow(r)
+                w.writerow({k: csv_safe(r.get(k)) for k in keys})
 
     # summary to stderr, exit code reflects findings
     counts = {}
