@@ -190,6 +190,7 @@ loopback nor used against third-party systems.
 | `README.md` | This advisory (full technical write-up). |
 | `advisory/LFM-2026-ADV-01-arbitrary-upload-rce.md` | Long-form advisory with code references, timeline and negative controls. |
 | `poc/lfm_upload_rce_poc.py` | PoC in Python stdlib. Default target `127.0.0.1:18080`; lab-only. |
+| `scanner/lfm_scanner.py` | Exposure scanner for one URL or a list. Non-destructive by default; active confirmation gated behind `--authorized`. See [`scanner/README.md`](scanner/README.md). |
 | `lab/` | Reproducible Docker lab (Laravel 12 + PHP 8.3 + Apache + package 3.3.3, published config unchanged). |
 | `demo/` | Demonstration GIF and its VHS script. |
 
