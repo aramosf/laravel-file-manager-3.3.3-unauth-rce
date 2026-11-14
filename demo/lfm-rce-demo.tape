@@ -1,4 +1,4 @@
-# Regenerate from the repository root:
+# Regenerate from the repository root (local lab must be running):
 #   vhs demo/lfm-rce-demo.tape
 Output "demo/lfm-rce-demo.gif"
 
@@ -16,27 +16,30 @@ Set BorderRadius 10
 Set WindowBar Colorful
 Set WindowBarSize 38
 Set Theme "Dracula"
-Set TypingSpeed 38ms
+Set TypingSpeed 95ms
 Set Framerate 20
 Set CursorBlink false
 
 Hide
 Type "export PS1='operator@lab:~$ ' && clear"
 Enter
-Sleep 600ms
+Sleep 800ms
 Show
-Sleep 400ms
+Sleep 600ms
 
 Type "echo '== target: http://127.0.0.1:18080  (authorized local lab) =='"
+Sleep 400ms
 Enter
-Sleep 700ms
+Sleep 1200ms
 
 Type "curl -s 127.0.0.1:18080/file-manager/initialize | jq -c '.config|{acl,disks}'"
+Sleep 400ms
 Enter
-Sleep 1000ms
+Sleep 1800ms
 
 Type "python3 poc/lfm_upload_rce_poc.py --cmd 'id; whoami; hostname'"
+Sleep 400ms
 Enter
-Sleep 1500ms
+Sleep 2500ms
 
 Sleep 5s
